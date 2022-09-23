@@ -34,6 +34,114 @@ class Jobsity {
 	public static function init() {
 		self::create_custom_post_type();
 		self::create_custom_taxonomy();
+		register_taxonomy_for_object_type( 'genre', 'movie' );
+		add_filter( 'manage_movie_posts_columns', array( 'Jobsity', 'movie_admin_columns' ) );
+		add_action( 'manage_movie_posts_custom_column', array( 'Jobsity', 'movie_admin_columns_content' ), 10, 2 );
+		add_filter( 'manage_edit-movie_sortable_columns', array( 'Jobsity', 'movie_admin_sortable_columns' ) );
+		add_filter( 'manage_actor_posts_columns', array( 'Jobsity', 'actor_admin_columns' ) );
+		add_action( 'manage_actor_posts_custom_column', array( 'Jobsity', 'actor_admin_columns_content' ), 10, 2 );
+		add_filter( 'manage_edit-actor_sortable_columns', array( 'Jobsity', 'actor_admin_sortable_columns' ) );
+		add_action( 'pre_get_posts', array( 'Jobsity', 'admin_custom_orders' ) );
+	}
+
+
+	/**
+	 * Adds new  admin columns to the 'movie' custom post type.
+	 */
+	public static function movie_admin_columns( $columns ) {
+		//error_log( 'Columns are:' );
+		//error_log( print_r( $columns, true ) );
+
+		$columns['release_year'] = 'Release Year';
+		return $columns;
+	}
+
+
+	/**
+	 * Adds content to the admin columns created for the 'movie' CPT.
+	 */
+	public static function movie_admin_columns_content( $column, $post_id ) {
+		switch ( $column ) {
+			case 'release_year':
+				$year = get_field( 'release_year', $post_id );
+				echo esc_attr( $year );
+				break;
+		}
+	}
+
+
+	/**
+	 * Make sortable the new columns created for the 'movie' CPT
+	 */
+	public static function movie_admin_sortable_columns( $columns ) {
+		$columns['release_year'] = 'release_year';
+		return $columns;
+	}
+
+
+	/**
+	 * Adds new  admin columns to the 'actor' custom post type.
+	 */
+	public static function actor_admin_columns( $columns ) {
+		$columns['actor_name']   = 'Name';
+		$columns['actor_movies'] = 'Movies';
+		return $columns;
+	}
+
+
+	/**
+	 * Adds content to the admin columns created for the 'actor' CPT.
+	 */
+	public static function actor_admin_columns_content( $column, $post_id ) {
+		switch ( $column ) {
+			case 'actor_name':
+				$name = get_field( 'actor_name', $post_id );
+				echo esc_attr( $name );
+				break;
+			case 'actor_movies':
+				$movies = get_field( 'actor_movies' );
+				if ( $movies ) {
+					$html = '';
+					foreach ( $movies as $movie ) {
+						$html .= '<a href="' . $movie->guid . '">' . $movie->post_title . '</a><br>';
+					}
+					echo $html;
+				}
+				break;
+		}
+	}
+
+
+	/**
+	 * Make sortable the new columns created for the 'actor' CPT
+	 */
+	public static function actor_admin_sortable_columns( $columns ) {
+		$columns['actor_name']   = 'actor_name';
+		$columns['actor_movies'] = 'actor_movies';
+		return $columns;
+	}
+
+
+	/**
+	 * Create the custom orders for the aplication
+	 */
+	public static function admin_custom_orders( $query ) {
+		if ( ! is_admin() || ! $query->is_main_query() ) {
+			return;
+		}
+
+		switch ( $query->get( 'orderby' ) ) {
+			case 'release_year':
+				$query->set( 'orderby', 'meta_value' );
+				$query->set( 'meta_key', 'release_year' );
+				$query->set( 'meta_type', 'text' );
+				break;
+			case 'actor_name':
+				$query->set( 'orderby', 'meta_value' );
+				$query->set( 'meta_key', 'actor_name' );
+				$query->set( 'meta_type', 'text' );
+				break;
+		}
 	}
 
 
@@ -72,6 +180,7 @@ class Jobsity {
 			'capability_type'    => 'post',
 			'has_archive'        => true,
 			'hierarchical'       => false,
+			'taxonomies'         => array( 'genre' ),
 			'supports'           => array( 'title', 'thumbnail', 'editor' ),
 		);
 
@@ -141,6 +250,7 @@ class Jobsity {
 				'labels'            => $labels,
 				'show_ui'           => true,
 				'show_admin_column' => true,
+				'show_in_rest'      => true,
 				'query_var'         => true,
 				'rewrite'           => array( 'slug' => 'type' ),
 			)
