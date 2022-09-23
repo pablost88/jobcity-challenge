@@ -10,7 +10,8 @@ class Jobsity {
 	 */
 	public static function plugin_activation() {
 		error_log( 'Plugin activated' );
-		self::cpt_create();
+		self::create_custom_post_type();
+		self::create_custom_taxonomy();
 
 		// Flush permalinks.
 		flush_rewrite_rules();
@@ -31,14 +32,15 @@ class Jobsity {
 	 * Fired by the init hook of the plugin.
 	 */
 	public static function init() {
-		self::cpt_create();
+		self::create_custom_post_type();
+		self::create_custom_taxonomy();
 	}
 
 
 	/**
 	 * Creates the custom post types
 	 */
-	public static function cpt_create() {
+	public static function create_custom_post_type() {
 		$labels = array(
 			'name'               => 'Movies', // General name for the post type.
 			'menu_name'          => 'Movies',
@@ -111,6 +113,40 @@ class Jobsity {
 
 		register_post_type( 'actor', $args );
 	}
+
+
+	/**
+	 * Creates the custom taxonomies
+	 */
+	public static function create_custom_taxonomy() {
+		$labels = array(
+			'name'              => 'Genres',
+			'singular_name'     => 'Genre',
+			'search_items'      => 'Search Genre',
+			'all_items'         => 'All Genres',
+			'parent_item'       => 'Parent Genre',
+			'parent_item_colon' => 'Parent Genre:',
+			'edit_item'         => 'Edit Genre',
+			'update_item'       => 'Update Genre',
+			'add_new_item'      => 'Add New Genre',
+			'new_item_name'     => 'New Type Genre',
+			'menu_name'         => 'Genres',
+		);
+
+		register_taxonomy(
+			'genre',
+			'movie',
+			array(
+				'hierarchical'      => true,
+				'labels'            => $labels,
+				'show_ui'           => true,
+				'show_admin_column' => true,
+				'query_var'         => true,
+				'rewrite'           => array( 'slug' => 'type' ),
+			)
+		);
+	}
+
 
 	/**
 	 * Handle the API calls
