@@ -52,6 +52,7 @@ class Jobsity {
 		//error_log( 'Columns are:' );
 		//error_log( print_r( $columns, true ) );
 
+		$columns['release_date'] = 'Release Date';
 		$columns['release_year'] = 'Release Year';
 		return $columns;
 	}
@@ -66,6 +67,10 @@ class Jobsity {
 				$year = get_field( 'release_year', $post_id );
 				echo esc_attr( $year );
 				break;
+			case 'release_date':
+				$year = get_field( 'release_date', $post_id );
+				echo esc_attr( $year );
+				break;
 		}
 	}
 
@@ -74,6 +79,7 @@ class Jobsity {
 	 * Make sortable the new columns created for the 'movie' CPT
 	 */
 	public static function movie_admin_sortable_columns( $columns ) {
+		$columns['release_date'] = 'release_date';
 		$columns['release_year'] = 'release_year';
 		return $columns;
 	}
@@ -131,6 +137,11 @@ class Jobsity {
 		}
 
 		switch ( $query->get( 'orderby' ) ) {
+			case 'release_date':
+				$query->set( 'orderby', 'meta_value' );
+				$query->set( 'meta_key', 'release_date' );
+				$query->set( 'meta_type', 'date' );
+				break;
 			case 'release_year':
 				$query->set( 'orderby', 'meta_value' );
 				$query->set( 'meta_key', 'release_year' );
