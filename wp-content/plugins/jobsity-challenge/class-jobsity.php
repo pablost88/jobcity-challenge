@@ -5,6 +5,7 @@ class Jobsity {
 	const API_URL              = 'https://api.themoviedb.org/3/';
 	const API_KEY              = 'd6aee8db7cd6a522157abaf6c8fa7491';
 	const API_URL_SINGLE_MOVIE = self::API_URL . '/movie/';
+	const API_URL_SINGLE_ACTOR = self::API_URL . '/person/';
 
 
 	/**
@@ -461,6 +462,34 @@ class Jobsity {
 		$url                 = self::API_URL_SINGLE_MOVIE . "$api_movie_id/similar?api_key=" . self::API_KEY . '&page=1';
 		$similar_movies_data = self::api_call( $url );
 		return $similar_movies_data->results;
+	}
+
+	/**
+	 * Retrieves extra data for a single actor
+	 */
+	public static function get_actor_extra_data( $api_actor_id ) {
+		$extra_data = array(
+			'birthday'       => '',
+			'place_of_birth' => '',
+			'day_of_death'   => '',
+			'website'        => '',
+			'bio'            => '',
+			'gallery'        => array(),
+		);
+
+		$url            = self::API_URL_SINGLE_ACTOR . "$api_actor_id?api_key=" . self::API_KEY . '&append_to_response=images';
+		$api_actor_data = self::api_call( $url );
+
+		if ( $api_actor_data ) {
+			$extra_data['birthday']       = $api_actor_data->birthday;
+			$extra_data['place_of_birth'] = $api_actor_data->place_of_birth;
+			$extra_data['day_of_death']   = ( null !== $api_actor_data->deathday ) ? $api_actor_data->deathday : '';
+			$extra_data['website']        = ( null !== $api_actor_data->homepage ) ? $api_actor_data->homepage : '';
+			$extra_data['bio']            = $api_actor_data->biography;
+			$extra_data['gallery']        = ( $api_actor_data->images->profiles ) ? $api_actor_data->images->profiles : array();
+		}
+
+		return $extra_data;
 	}
 
 }
