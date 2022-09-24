@@ -4,6 +4,8 @@ class Jobsity {
 	const TRANSIENT_EXPIRATION = 60 * 60 * 168; // 7 days until the transient gets updated.
 	const API_URL              = 'https://api.themoviedb.org/3/';
 	const API_KEY              = 'd6aee8db7cd6a522157abaf6c8fa7491';
+	const API_URL_SINGLE_MOVIE = self::API_URL . '/movie/';
+
 
 	/**
 	 * Fired when the plugin is activated by the activation hook
@@ -359,21 +361,20 @@ class Jobsity {
 	/**
 	 * Handle the API calls
 	 */
-	public static function api_call() {
+	public static function api_call( $url ) {
 		$args = array(
 			'headers' => array(
 				'Content-Type' => 'application/json',
 			),
 		);
 
-		$response = wp_remote_get( self::API_URL . 'movie/550?api_key=' . self::API_KEY, $args );
+		$response = wp_remote_get( $url, $args );
 		$data     = wp_remote_retrieve_body( $response );
 
 		if ( empty( $data ) ) return false;
 
 		$api_data = json_decode( $data );
-		error_log( print_r( $api_data, true ) );
-
+		return $api_data;
 	}
 
 
@@ -381,7 +382,85 @@ class Jobsity {
 	 * Retrieves extra data for a single movie
 	 */
 	public static function get_movie_extra_data( $api_movie_id ) {
-		error_log( 'Getting the extra information' );
+		$extra_data = array(
+			'overview'             => '',
+			'production_companies' => array(),
+			'original_language'    => '',
+			'popularity'           => '',
+			'trailer'              => '',
+			'alternatives_titles'  => array(),
+			'reviews'              => array(),
+			'similar_movies'       => array(),
+		);
+
+		$url            = self::API_URL_SINGLE_MOVIE . "$api_movie_id?api_key=" . self::API_KEY . '&language=en-US&append_to_response=videos,images';
+		$api_movie_data = self::api_call( $url );
+
+		if ( $api_movie_data ) {
+			$extra_data['overview']             = $api_movie_data->overview;
+			$extra_data['production_companies'] = $api_movie_data->production_companies;
+			$extra_data['original_language']    = $api_movie_data->original_language;
+			$extra_data['popularity']           = $api_movie_data->popularity;
+			$extra_data['trailer']              = self::get_movie_trailer( $api_movie_data->videos );
+			$extra_data['alternatives_titles']  = self::get_movie_alternative_titles( $api_movie_id );
+			$extra_data['reviews']              = self::get_movie_reviews( $api_movie_id );
+			$extra_data['similar_movies']       = self::get_similar_movies( $api_movie_id );
+
+		}
+
+		//error_log( 'Getting the extra information' );
+		//error_log( print_r( $extra_data, true ) );
+
+		return $extra_data;
+	}
+
+
+	/**
+	 * Retrieves the trailer of a movie
+	 */
+	public static function get_movie_trailer( $movie_videos ) {
+		if ( $movie_videos->results ) {
+			$movie_videos_data = $movie_videos->results;
+			foreach ( $movie_videos_data as $movie_video ) {
+				if ( 'Trailer' === $movie_video->type ) {
+					return 'https://www.youtube.com/watch?v=e' . $movie_video->key;
+				}
+			}
+		}
+
+		return '';
+	}
+
+
+	/**
+	 * Retrieves the movie alternative titles.
+	 */
+	public static function get_movie_alternative_titles( $api_movie_id ) {
+		$url    = self::API_URL_SINGLE_MOVIE . "$api_movie_id/alternative_titles?api_key=" . self::API_KEY;
+		$result = self::api_call( $url );
+		return $result->titles;
+	}
+
+	/**
+	 * Retrieves the movie reviews.
+	 */
+	public static function get_movie_reviews( $api_movie_id ) {
+		$url          = self::API_URL_SINGLE_MOVIE . "76341/reviews?api_key=" . self::API_KEY . '&page=1';
+		$reviews_data = self::api_call( $url );
+
+		if ( $reviews_data->total_results > 0 ) {
+			return $reviews_data->results;
+		}
+		return array();
+	}
+
+	/**
+	 * Retrieves the similar movies.
+	 */
+	public static function get_similar_movies( $api_movie_id ) {
+		$url                 = self::API_URL_SINGLE_MOVIE . "$api_movie_id/similar?api_key=" . self::API_KEY . '&page=1';
+		$similar_movies_data = self::api_call( $url );
+		return $similar_movies_data->results;
 	}
 
 }
