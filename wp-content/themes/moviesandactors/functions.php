@@ -68,3 +68,24 @@ function get_popular_actors() {
 
 	return $actor_query;
 }
+
+
+/**
+ * Filter archive pages
+ */
+function archive_movies( $query ) {
+	if ( ! is_admin() && $query->is_main_query() ) {
+		if ( is_post_type_archive( 'actor' ) ) {
+			$query->query_vars['meta_key'] = 'actor_name';
+			$query->query_vars['orderby']  = 'meta_value';
+			$query->query_vars['order']    = 'asc';
+		}
+
+		if ( is_post_type_archive( 'movie' ) ) {
+			$query->query_vars['orderby']  = 'title';
+			$query->query_vars['order']    = 'asc';
+		}
+	}
+}
+
+add_action( 'pre_get_posts', 'archive_movies', 1 );
