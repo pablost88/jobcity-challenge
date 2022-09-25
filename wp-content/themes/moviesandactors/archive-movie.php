@@ -21,8 +21,8 @@ if ( have_posts() ) :
 	echo '<div class="responsive-grid-1">';
 	while ( have_posts() ) :
 		the_post();
-		$movie_slug          = get_permalink( $get_permalink );
-		$movie_poster        = get_the_post_thumbnail_url();
+		$movie_slug   = get_permalink();
+		$movie_poster = get_the_post_thumbnail_url();
 		?>
 
 		<div class="margin-top-50">
