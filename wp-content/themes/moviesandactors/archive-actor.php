@@ -21,8 +21,8 @@ if ( have_posts() ) :
 	echo '<div class="responsive-grid-1">';
 	while ( have_posts() ) :
 		the_post();
-		$actor_slug          = get_permalink( $get_permalink );
-		$actor_poster        = get_the_post_thumbnail_url();
+		$actor_slug   = get_permalink();
+		$actor_poster = get_the_post_thumbnail_url();
 		?>
 
 		<div class="margin-top-50">
