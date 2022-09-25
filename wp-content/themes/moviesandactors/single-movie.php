@@ -26,43 +26,49 @@ while ( have_posts() ) :
 	$extra_data   = Jobsity::get_movie_extra_data( $api_movie_id );
 	?>
 
-	<div>
-		<figure>
+	<div class="max-width-2 center single-movie-block margin-top-50">
+		<h1 class="text-center h1-big"><?php echo esc_attr( $movie_title ); ?></h1>
+		<div class="align-self-center margin-top-15">
+			<img src="<?php echo esc_attr( $movie_poster ); ?>" />
+		</div>
 
-		</figure>
-
-		<div>
-			<h1><?php esc_attr( $movie_title ); ?></h1>
+		<div class="margin-top-30">
 			<div>
-				<h2>Release Date: <?php esc_attr( $release_date ); ?></h2>
-				<h2>Original Language: <?php esc_attr( $extra_data['original_language'] ); ?></h2>
-				<h2>Popularity: <?php esc_attr( $extra_data['popularity'] ); ?></h2>
+				<h1>Release Date: <span><?php echo esc_attr( $release_date ); ?></span></h1>
+				<h1 class="margin-top-15">Original Language: <span><?php echo esc_attr( $extra_data['original_language'] ); ?></span></h1>
+				<h1 class="margin-top-15">Popularity: <span><?php echo esc_attr( $extra_data['popularity'] ); ?></span></h1>
 			</div>
-			<p>
-			<?php esc_attr( $extra_data['overview'] ); ?>
-			</p>
 
-			<div>
-				<h2>Cast</h2>
-				<ul>
+			<div class="margin-top-15">
+				<h1>Overview</h1>
+				<p>
+				<?php echo esc_attr( $extra_data['overview'] ); ?>
+				</p>
+			</div>
+
+			<div class="margin-top-15">
+				<h1>Cast</h1>
+				<ul class="clean-list">
 				<?php
 				foreach ( $actors as $actor ) {
-					echo '<li><a href="' . esc_attr( $actor->guid ) . '">' . esc_attr( $actor->post_title ) . '</a></li>';
+					$actor_slug = get_permalink( $actor->ID );
+					echo '<li><a href="' . esc_attr( $actor_slug ) . '">' . esc_attr( $actor->post_title ) . '</a></li>';
 				}
 				?>
 				</ul>
 			</div>
 
-			<div>
-				<h2>Trailer</h2>
-				<video>
-
-				</video>
+			<div class="margin-top-15">
+				<h1>Trailer</h1>
+				<div class="video-container margin-top-10">
+				<iframe src="<?php echo esc_attr( $extra_data['trailer'] ); ?>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen">
+				</iframe>
+				</div>
 			</div>
 
-			<div>
-				<h2>Genres</h2>
-				<ul>
+			<div class="margin-top-15">
+				<h1>Genres</h1>
+				<ul class="clean-list">
 				<?php
 				foreach ( $movie_terms as $movie_term ) {
 					echo '<li>' . esc_attr( $movie_term->name ) . '</li>';
@@ -71,8 +77,8 @@ while ( have_posts() ) :
 				</ul>
 			</div>
 
-			<div>
-				<h2>Production Companies</h2>
+			<div class="margin-top-15">
+				<h1>Production Companies</h1>
 				<?php
 				$companies      = $extra_data['production_companies'];
 				$companies_text = '';
@@ -83,8 +89,8 @@ while ( have_posts() ) :
 				<p><?php echo esc_attr( rtrim( $companies_text, ', ' ) ); ?></p>
 			</div>
 
-			<div>
-				<h2>Alternative Titles</h2>
+			<div class="margin-top-15">
+				<h1>Alternative Titles</h1>
 				<?php
 				$titles      = $extra_data['alternatives_titles'];
 				$titles_text = '';
@@ -95,12 +101,10 @@ while ( have_posts() ) :
 				<p><?php echo esc_attr( rtrim( $titles_text, ', ' ) ); ?></p>
 			</div>
 
-			<div>
-				<h2>Reviews</h2>
+			<div class="margin-top-15">
+				<h1>Reviews</h1>
 				<?php
 				$reviews = $extra_data['reviews'];
-				error_log( 'Reviews' );
-				error_log( print_r( $reviews, true ) );
 				foreach ( $reviews as $key => $review ) :
 					if ( 10 === $key ) { // Allow only 10 reviews.
 						break;
@@ -108,19 +112,19 @@ while ( have_posts() ) :
 					$review_author  = $review->author;
 					$review_content = $review->content;
 					?>
-				<div>
-					<h4><?php echo esc_attr( $review_author ); ?></h4>
+				<div class="margin-top-10">
+					<h4>Author: <span><?php echo esc_attr( $review_author ); ?></span></h4>
 					<p><?php echo esc_attr( $review_content ); ?></p>
-				<div>
+				</div>
 					<?php
 				endforeach;
 				?>
 			</div>
 
-			<div>
-				<h2>Similar Movies</h2>
+			<div class="margin-top-15">
+				<h1>Similar Movies</h1>
 				<?php
-				$similar_movies = $extra_data['similar_movies'];
+				$similar_movies      = $extra_data['similar_movies'];
 				$similar_movies_text = '';
 				foreach ( $similar_movies as $similar_movie ) {
 					$similar_movies_text .= "$similar_movie->title, ";

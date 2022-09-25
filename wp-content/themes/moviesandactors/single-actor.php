@@ -25,25 +25,31 @@ while ( have_posts() ) :
 	$extra_data       = Jobsity::get_actor_extra_data( $api_actor_id );
 	?>
 
-	<div>
-		<figure>
-
-		</figure>
+	<div class="max-width-2 center single-actor-block margin-top-50">
+		<h1 class="text-center h1-big"><?php echo esc_attr( $actor_name ); ?></h1>
+		<div class="align-self-center margin-top-15">
+			<img src="<?php echo esc_attr( $actor_photo ); ?>" />
+		</div>
 
 		<div>
-			<h1><?php echo esc_attr( $actor_name ); ?></h1>
-			<p><?php echo esc_attr( $extra_data['bio'] ); ?></p>
-			<div>
-				<h2>Popularity: <?php echo esc_attr( $actor_popularity ); ?></h2>
-				<h2>Birthday: <?php echo esc_attr( $extra_data['birthday'] ); ?></h2>
-				<h2>Place of Birth: <?php echo esc_attr( $extra_data['place_of_birth'] ); ?></h2>
-				<h2>Day of death: <?php echo esc_attr( $extra_data['day_of_death'] ); ?></h2>
-				<h2>Website: <?php echo esc_attr( $extra_data['website'] ); ?></h2>
+			<div class="margin-top-15">
+				<h1>Overview</h1>
+				<p>
+				<?php echo esc_attr( $extra_data['bio'] ); ?>
+				</p>
 			</div>
 
-			<div>
-				<h2>Movies</h2>
-				<ul>
+			<div class="margin-top-30">
+				<h1>Popularity: <span><?php echo esc_attr( $actor_popularity ); ?></span></h1>
+				<h1 class="margin-top-15">Birthday: <span><?php echo esc_attr( $extra_data['birthday'] ); ?></span></h1>
+				<h1 class="margin-top-15">Place of Birth: <span><?php echo esc_attr( $extra_data['place_of_birth'] ); ?></span></h1>
+				<h1 class="margin-top-15">Day of death: <span><?php echo esc_attr( $extra_data['day_of_death'] ); ?></span></h1>
+				<h1 class="margin-top-15">Website: <span><?php echo esc_attr( $extra_data['website'] ); ?></span></h1>
+			</div>
+
+			<div class="margin-top-30">
+				<h1>Movies</h1>
+				<ul class="clean-list">
 				<?php
 				foreach ( $movies as $movie ) {
 					$movie_slug = get_permalink( $movie->ID );
@@ -53,17 +59,20 @@ while ( have_posts() ) :
 				</ul>
 			</div>
 
-			<div>
-				<h2>Gallery</h2>
+			<div class="margin-top-30">
+				<h1>Gallery</h1>
 				<?php
 				$actor_images = $extra_data['gallery'];
 				if ( ! empty( $actor_images ) ) {
-					echo '<div>';
+					echo '<div class="responsive-grid-1">';
 					foreach ( $actor_images as $key => $actor_image ) {
 						if ( 10 === $key ) { // Allow only 10 reviews.
 							break;
 						}
-						echo '<figure></figure>';
+						echo '
+						<div class="margin-top-10">
+							<img src="https://image.tmdb.org/t/p/w300_and_h450_bestv2/' . esc_attr( $actor_image->file_path ) . '" />
+						</div>';
 					}
 					echo '</div>';
 				}

@@ -17,10 +17,24 @@ get_header();
 
 <?php
 if ( have_posts() ) :
+	echo '<h1 class="margin-top-50 text-center h1-big">All Actors</h1>';
+	echo '<div class="responsive-grid-1">';
 	while ( have_posts() ) :
 		the_post();
-		echo the_title();
+		$actor_slug          = get_permalink( $get_permalink );
+		$actor_poster        = get_the_post_thumbnail_url();
+		?>
+
+		<div class="margin-top-50">
+			<h1><a href="<?php echo esc_attr( $actor_slug ); ?>"><?php the_title(); ?></a></h1>
+			<div class="margin-top-10">
+				<img src="<?php echo esc_attr( $actor_poster ); ?>" />
+			</div>
+		</div>
+
+		<?php
 	endwhile;
+	echo '</div>';
 endif;
 ?>
 

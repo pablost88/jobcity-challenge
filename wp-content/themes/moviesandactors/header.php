@@ -21,24 +21,26 @@
 	<body <?php body_class(); ?>>
 	<div id="page" class="site">
 
-		<header>
-			<div>
-				<h1>Site Logo</h1>
-			</div>
+		<header class="header flex">
+			<div class="global-padding">
+				<div class="max-width-1 center">
+					<h1 class="h1-big">Jobsity Cinema</h1>
+				</div>
 
-			<nav>
-				<?php
-				wp_nav_menu(
-					array(
-						'theme_location'  => 'primary',
-						'menu_class'      => 'menu-wrapper',
-						'container_class' => 'primary-menu-container',
-						'items_wrap'      => '<ul id="primary-menu-list" class="%2$s">%3$s</ul>',
-						'fallback_cb'     => false,
-					)
-				);
-				?>
-			</nav>
+				<nav class="max-width-1 center">
+					<?php
+					wp_nav_menu(
+						array(
+							'theme_location'  => 'primary',
+							'menu_class'      => 'menu-wrapper flex',
+							'container_class' => 'primary-menu-container',
+							'items_wrap'      => '<ul id="primary-menu-list" class="%2$s clean-list">%3$s</ul>',
+							'fallback_cb'     => false,
+						)
+					);
+					?>
+				</nav>
+			</div>
 		</header>
 
-		<main id="main" class="site-main">
+		<main id="main" class="site-main max-width-1 global-padding center">

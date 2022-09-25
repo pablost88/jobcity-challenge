@@ -17,10 +17,24 @@ get_header();
 
 <?php
 if ( have_posts() ) :
+	echo '<h1 class="margin-top-50 text-center h1-big">All Movies</h1>';
+	echo '<div class="responsive-grid-1">';
 	while ( have_posts() ) :
 		the_post();
-		echo the_title();
+		$movie_slug          = get_permalink( $get_permalink );
+		$movie_poster        = get_the_post_thumbnail_url();
+		?>
+
+		<div class="margin-top-50">
+			<h1><a href="<?php echo esc_attr( $movie_slug ); ?>"><?php the_title(); ?></a></h1>
+			<div class="margin-top-10">
+				<img src="<?php echo esc_attr( $movie_poster ); ?>" />
+			</div>
+		</div>
+
+		<?php
 	endwhile;
+	echo '</div>';
 endif;
 ?>
 

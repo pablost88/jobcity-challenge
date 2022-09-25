@@ -17,6 +17,18 @@ add_theme_support( 'post-thumbnails' );
 
 
 /**
+ * Enqueue theme styles and scripts
+ */
+function moviesandactors_scripts() {
+	wp_enqueue_style( 'moviesandactors-style', get_template_directory_uri() . '/style.css', array(), wp_get_theme()->get( 'Version' ) );
+	// Google Fonts Styles.
+	wp_enqueue_style( 'moviesandactors-google-fonts', 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap', array(), null );
+}
+
+add_action( 'wp_enqueue_scripts', 'moviesandactors_scripts' );
+
+
+/**
  * Get upcoming movies from the database
  *
  * @return $movies_query Movies with a release date greater than the actual date
