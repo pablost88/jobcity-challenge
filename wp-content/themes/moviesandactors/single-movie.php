@@ -17,6 +17,12 @@ get_header();
 /* Start the Loop */
 while ( have_posts() ) :
 	the_post();
+
+	$movie_id = get_the_ID();
+	totalView( $movie_id );
+
+	custom_search_order_formula( $movie_id );
+
 	$movie_title  = get_the_title();
 	$movie_poster = get_the_post_thumbnail_url();
 	$movie_terms  = get_the_terms( $post->ID, 'genre' );
