@@ -5,6 +5,10 @@ The database file is located in the root directory of the application.
 The URL of the git repository is https://github.com/pablost88/jobcity-challenge
 Here you'll find the folder with the application code.
 
+To access the WordPress Dashboard use these credentials:
+Username: pablo
+Password: pablo
+
 I finished all the mandatory features. Also, I completed the optional feature 'Search'.
 
 ## Mandatory Features
