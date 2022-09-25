@@ -41,15 +41,6 @@ if ( $movies_query->have_posts() ) :
 
 		$movie_terms = get_the_terms( $post->ID, 'genre' );
 
-		/*
-		error_log( get_the_title() );
-		error_log( $release_date );
-		error_log( $release_date_format );
-		error_log( print_r( $date_input, true ) );
-		error_log( 'Terms' );
-		error_log( print_r( $terms, true ) );
-		*/
-
 		if ( $movie_year !== $date_input['year'] ) {
 			if ( -1 === $movie_year ) {
 				echo '<div class="margin-top-50">';
@@ -113,9 +104,6 @@ if ( $movies_query->have_posts() ) :
 <?php
 	wp_reset_postdata();
 	$actors_query = get_popular_actors();
-
-	//error_log( 'Popular actors' );
-	//error_log( print_r( $actor_query, true ) );
 
 if ( $actors_query->have_posts() ) :
 	echo '<h1 class="margin-top-50 text-center h1-big">Popular Actors</h1>';

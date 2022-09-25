@@ -23,8 +23,6 @@ if ( have_posts() ) :
 
 		$search_filter_value = get_post_meta( $id, 'search_filter', true );
 		$title_post = get_the_title();
-		error_log( "Search filter for $title_post is" );
-		error_log( print_r( $search_filter_value, true ) );
 
 		if ( 'movie' === $result_post_type ) {
 			$more_info = 'More info about this movie';

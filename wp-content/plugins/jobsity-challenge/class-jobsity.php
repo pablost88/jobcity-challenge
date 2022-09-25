@@ -12,7 +12,6 @@ class Jobsity {
 	 * Fired when the plugin is activated by the activation hook
 	 */
 	public static function plugin_activation() {
-		error_log( 'Plugin activated' );
 		self::create_custom_post_type();
 		self::create_custom_taxonomy();
 
@@ -25,7 +24,6 @@ class Jobsity {
 	 * Fired when the plugin is activated by the deactivation hook
 	 */
 	public static function plugin_deactivation() {
-		error_log( 'Plugin deactivated' );
 
 		flush_rewrite_rules();
 	}
@@ -53,8 +51,6 @@ class Jobsity {
 	 * Adds new  admin columns to the 'movie' custom post type.
 	 */
 	public static function movie_admin_columns( $columns ) {
-		//error_log( 'Columns are:' );
-		//error_log( print_r( $columns, true ) );
 
 		$columns['release_date'] = 'Release Date';
 		$columns['release_year'] = 'Release Year';
@@ -411,9 +407,6 @@ class Jobsity {
 			$extra_data['similar_movies']       = self::get_similar_movies( $api_movie_id );
 
 		}
-
-		//error_log( 'Getting the extra information' );
-		//error_log( print_r( $extra_data, true ) );
 
 		return $extra_data;
 	}

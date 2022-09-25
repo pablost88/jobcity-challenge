@@ -99,7 +99,6 @@ function custom_filters( $query ) {
 		}
 
 		if ( is_search() ) {
-			error_log( 'Custom order' );
 			$query->query_vars['meta_key'] = 'search_filter';
 			$query->query_vars['type']     = 'numeric';
 			$query->query_vars['orderby']  = 'meta_value';
