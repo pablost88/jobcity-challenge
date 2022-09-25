@@ -17,6 +17,12 @@ get_header();
 /* Start the Loop */
 while ( have_posts() ) :
 	the_post();
+
+	$actor_id = get_the_ID();
+	totalView( $actor_id );
+
+	custom_search_order_formula( $actor_id );
+
 	$actor_name       = get_field( 'actor_name' );
 	$actor_photo      = get_the_post_thumbnail_url();
 	$actor_popularity = get_field( 'popularity' );
@@ -51,9 +57,11 @@ while ( have_posts() ) :
 				<h1>Movies</h1>
 				<ul class="clean-list">
 				<?php
-				foreach ( $movies as $movie ) {
-					$movie_slug = get_permalink( $movie->ID );
-					echo '<li><a href="' . esc_attr( $movie_slug ) . '">' . esc_attr( $movie->post_title ) . '</a></li>';
+				if ( $movies ) {
+					foreach ( $movies as $movie ) {
+						$movie_slug = get_permalink( $movie->ID );
+						echo '<li><a href="' . esc_attr( $movie_slug ) . '">' . esc_attr( $movie->post_title ) . '</a></li>';
+					}
 				}
 				?>
 				</ul>
