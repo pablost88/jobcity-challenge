@@ -32,7 +32,7 @@ if ( $movies_query->have_posts() ) :
 	while ( $movies_query->have_posts() ) :
 		$movies_query->the_post();
 
-		$movie_slug          = get_permalink( $get_permalink );
+		$movie_slug          = get_permalink();
 		$release_date        = get_field( 'release_date', false, false );
 		$time_input          = strtotime( $release_date );
 		$date_input          = getDate( $time_input );
@@ -124,7 +124,7 @@ if ( $actors_query->have_posts() ) :
 		$actors_query->the_post();
 		$actor_name   = get_field( 'actor_name' );
 		$actor_poster = get_the_post_thumbnail_url();
-		$actor_slug   = get_permalink( $get_permalink );
+		$actor_slug   = get_permalink();
 		?>
 
 		<div class="margin-top-50">
