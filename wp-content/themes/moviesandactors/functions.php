@@ -85,7 +85,7 @@ function get_popular_actors() {
 /**
  * Filter archive pages
  */
-function archive_movies( $query ) {
+function custom_filters( $query ) {
 	if ( ! is_admin() && $query->is_main_query() ) {
 		if ( is_post_type_archive( 'actor' ) ) {
 			$query->query_vars['meta_key'] = 'actor_name';
@@ -97,7 +97,53 @@ function archive_movies( $query ) {
 			$query->query_vars['orderby']  = 'title';
 			$query->query_vars['order']    = 'asc';
 		}
+
+		if ( is_search() ) {
+			error_log( 'Custom order' );
+			$query->query_vars['meta_key'] = 'search_filter';
+			$query->query_vars['type']     = 'numeric';
+			$query->query_vars['orderby']  = 'meta_value';
+			$query->query_vars['order']    = 'desc';
+		}
 	}
 }
 
-add_action( 'pre_get_posts', 'archive_movies', 1 );
+add_action( 'pre_get_posts', 'custom_filters', 1 );
+
+
+/**
+ * Register counter for movies and actors
+ */
+function totalView( $id ) {
+	$count = 1;
+	$check = get_post_meta( $id, 'count', true );
+	if ( ! $check ) {
+		add_post_meta( $id, 'count', $count, true );
+	} else {
+		$inc = $check + 1;
+		update_post_meta( $id, 'count', $inc );
+	}
+}
+
+/**
+ * Register search formula for movies and actors
+ */
+function custom_search_order_formula( $id ) {
+	$views      = get_post_meta( $id, 'count', true );
+	$popularity = get_field( 'popularity', $id );
+	$post_date  = get_the_time( 'U' );
+	$now        = new DateTime( 'now' );
+	$now        = $now->getTimestamp();
+	$diff       = $now - $post_date;
+	$num_days   = round( $diff / 86400 );
+
+	$search_filter       = round( ( $views * $popularity ) / $num_days );
+	$search_filter_value = get_post_meta( $id, 'search_filter' );
+
+	if ( ! $search_filter_value ) {
+		add_post_meta( $id, 'search_filter', $search_filter );
+	} else {
+		update_post_meta( $id, 'search_filter', $search_filter );
+	}
+}
+
