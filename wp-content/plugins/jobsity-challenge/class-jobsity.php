@@ -424,7 +424,7 @@ class Jobsity {
 			$movie_videos_data = $movie_videos->results;
 			foreach ( $movie_videos_data as $movie_video ) {
 				if ( 'Trailer' === $movie_video->type ) {
-					return 'https://www.youtube.com/watch?v=e' . $movie_video->key;
+					return 'https://www.youtube.com/embed/' . $movie_video->key;
 				}
 			}
 		}
